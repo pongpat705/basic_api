@@ -29,6 +29,7 @@ public class ApiService {
 			status.setCode("00");
 			
 			List<Map<String, Object>> xResult = customRepos.callListProvince();
+			
 			result.setOutput(xResult);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
