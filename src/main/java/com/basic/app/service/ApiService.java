@@ -19,6 +19,7 @@ public class ApiService {
 	@Autowired 
 	private CustomRepository customRepos;
 	
+	@Transactional(rollbackOn=Exception.class)
 	public Response<List<Map<String, Object>>> getProvinceList(){
 		Response<List<Map<String, Object>>> result = new Response<>();
 		Status status = new Status();

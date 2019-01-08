@@ -34,7 +34,6 @@ public class CustomRepository {
 
 	public List<Map<String, Object>> callListProvince() throws SQLException {
 		Connection conn = getConnection();
-		conn.setAutoCommit(false);
 		StringBuilder sb = new StringBuilder();
 		sb.append("{ ? = call list_province() }");
 		CallableStatement callableStatement = conn.prepareCall(sb.toString());
@@ -44,7 +43,6 @@ public class CustomRepository {
 		List<Map<String, Object>> list = SqlUtil.resultSetToArrayList(rs);
 		rs.close();
 		callableStatement.close();
-		conn.close();
 		return list;		
 	}
 }
