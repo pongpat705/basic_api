@@ -1,0 +1,53 @@
+package com.basic.app.security;
+
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
+
+	private TokenAuthenticationService tokenAuthenticationService;
+
+	private JwtProperties jwtProperties = new JwtProperties();
+
+	public JWTLoginFilter(String url, AuthenticationManager authenticationManager) {
+		super(new AntPathRequestMatcher(url));
+		setAuthenticationManager(authenticationManager);
+		tokenAuthenticationService = new TokenAuthenticationService();
+	}
+
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
+		// logingin
+		JwtTokenRequest credentials = new ObjectMapper().readValue(httpServletRequest.getInputStream(),
+				JwtTokenRequest.class);
+		TextEncryptor encrypted = Encryptors.queryableText(jwtProperties.getJwtSecret(), jwtProperties.getSalt());
+		credentials.setPassword(encrypted.encrypt(credentials.getPassword()));
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(credentials.getUsername(),
+				credentials.getPassword());
+		return getAuthenticationManager().authenticate(token);
+	}
+
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+			Authentication authentication) throws IOException, ServletException {
+		// gen token to response header
+		String name = authentication.getName();
+		tokenAuthenticationService.generateToken(response, name, authentication);
+	}
+}

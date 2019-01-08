@@ -1,7 +1,6 @@
 package com.basic.app.service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ public class ApiService {
 	@Autowired 
 	private CustomRepository customRepos;
 	
-	@Transactional
 	public Response<List<Map<String, Object>>> getProvinceList(){
 		Response<List<Map<String, Object>>> result = new Response<>();
 		Status status = new Status();

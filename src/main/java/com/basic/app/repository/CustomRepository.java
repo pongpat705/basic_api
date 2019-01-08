@@ -38,7 +38,7 @@ public class CustomRepository {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{ ? = call list_province() }");
 		CallableStatement callableStatement = conn.prepareCall(sb.toString());
-		callableStatement.registerOutParameter(1, Types.VARCHAR);
+		callableStatement.registerOutParameter(1, Types.OTHER);
 		callableStatement.execute();
 		ResultSet rs = (ResultSet) callableStatement.getObject(1);
 		List<Map<String, Object>> list = SqlUtil.resultSetToArrayList(rs);
