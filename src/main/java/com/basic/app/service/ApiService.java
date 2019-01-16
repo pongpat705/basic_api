@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.basic.app.exception.MyException;
 import com.basic.app.model.Response;
 import com.basic.app.model.Status;
 import com.basic.app.repository.CustomRepository;
@@ -22,6 +23,7 @@ public class ApiService {
 	@Transactional(rollbackOn=Exception.class)
 	public Response<List<Map<String, Object>>> getProvinceList(){
 		Response<List<Map<String, Object>>> result = new Response<>();
+		
 		Status status = new Status();
 		result.setResponse(status);
 		try {
